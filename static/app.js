@@ -284,21 +284,29 @@ class D365TestApp {
     renderDashboardStats(data) {
         const statsContainer = document.getElementById('dashboard-stats');
         
+        // Ensure data exists and has default values
+        const stats = {
+            total_test_cases: data?.total_test_cases || 0,
+            total_test_runs: data?.total_test_runs || 0,
+            success_rate: data?.success_rate || 0,
+            average_execution_time: data?.average_execution_time || 0
+        };
+        
         statsContainer.innerHTML = `
             <div class="bg-blue-50 p-4 rounded-lg">
-                <div class="text-2xl font-bold text-blue-600">${data.total_test_cases}</div>
+                <div class="text-2xl font-bold text-blue-600">${stats.total_test_cases}</div>
                 <div class="text-sm text-gray-600">Total Test Cases</div>
             </div>
             <div class="bg-green-50 p-4 rounded-lg">
-                <div class="text-2xl font-bold text-green-600">${data.total_test_runs}</div>
+                <div class="text-2xl font-bold text-green-600">${stats.total_test_runs}</div>
                 <div class="text-sm text-gray-600">Total Test Runs</div>
             </div>
             <div class="bg-purple-50 p-4 rounded-lg">
-                <div class="text-2xl font-bold text-purple-600">${data.success_rate}%</div>
+                <div class="text-2xl font-bold text-purple-600">${stats.success_rate}%</div>
                 <div class="text-sm text-gray-600">Success Rate</div>
             </div>
             <div class="bg-yellow-50 p-4 rounded-lg">
-                <div class="text-2xl font-bold text-yellow-600">${data.average_execution_time}s</div>
+                <div class="text-2xl font-bold text-yellow-600">${stats.average_execution_time}s</div>
                 <div class="text-sm text-gray-600">Avg Execution Time</div>
             </div>
         `;

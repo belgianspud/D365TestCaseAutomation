@@ -31,12 +31,19 @@ class Token(BaseModel):
 
 # Test Case schemas
 class TestStepBase(BaseModel):
-    type: str  # navigate, click, fill, verify, wait, condition
+    type: str  # navigate, click, fill, verify, wait, condition, break_if, loop_until
     selector: Optional[str] = None
     value: Optional[str] = None
     expected: Optional[str] = None
     timeout: Optional[int] = 5000
     description: Optional[str] = None
+    # Conditional logic fields
+    condition_type: Optional[str] = None  # exists, not_exists, text_contains, text_equals, visible, not_visible
+    condition_selector: Optional[str] = None
+    condition_value: Optional[str] = None
+    break_on_condition: Optional[bool] = None  # True = pass, False = fail
+    max_attempts: Optional[int] = None  # For loop_until steps
+    on_failure: Optional[str] = None  # continue, break_pass, break_fail
 
 class TestCaseBase(BaseModel):
     name: str

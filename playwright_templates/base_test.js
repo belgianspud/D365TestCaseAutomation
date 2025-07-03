@@ -292,6 +292,111 @@ class D365TestRunner {
         await this.waitForTimeout(2000);
         await this.waitForD365Ready();
     }
+
+    async checkCondition(conditionType, selector, expectedValue) {
+        console.log(`Checking condition: ${conditionType} for selector: ${selector}`);
+        
+        switch (conditionType) {
+            case 'exists':
+                return await this.page.locator(selector).count() > 0;
+            
+            case 'not_exists':
+                return await this.page.locator(selector).count() === 0;
+            
+            case 'visible':
+                try {
+                    const element = this.page.locator(selector);
+                    return await element.isVisible();
+                } catch {
+                    return false;
+                }
+            
+            case 'not_visible':
+                try {
+                    const element = this.page.locator(selector);
+                    return !(await element.isVisible());
+                } catch {
+                    return true;
+                }
+            
+            case 'text_contains':
+                try {
+                    const element = this.page.locator(selector);
+                    const text = await element.textContent();
+                    return text && text.includes(expectedValue);
+                } catch {
+                    return false;
+                }
+            
+            case 'text_equals':
+                try {
+                    const element = this.page.locator(selector);
+                    const text = await element.textContent();
+                    return text && text.trim() === expectedValue;
+                } catch {
+                    return false;
+                }
+            
+            default:
+                throw new Error(`Unknown condition type: ${conditionType}`);
+        }
+    }
+
+    async executeConditionalStep(step) {
+        console.log(`Executing conditional step: ${step.description || step.type}`);
+        
+        const conditionMet = await this.checkCondition(
+            step.condition_type,
+            step.condition_selector,
+            step.condition_value
+        );
+        
+        if (step.type === 'break_if' && conditionMet) {
+            const isPass = step.break_on_condition === true;
+            throw new Error(`BREAK_${isPass ? 'PASS' : 'FAIL'}: ${step.description || 'Condition met'}`);
+        }
+        
+        return conditionMet;
+    }
+
+    async executeLoopUntil(step) {
+        console.log(`Executing loop until condition: ${step.description || step.type}`);
+        
+        const maxAttempts = step.max_attempts || 10;
+        let attempts = 0;
+        
+        while (attempts < maxAttempts) {
+            attempts++;
+            console.log(`Loop attempt ${attempts}/${maxAttempts}`);
+            
+            const conditionMet = await this.checkCondition(
+                step.condition_type,
+                step.condition_selector,
+                step.condition_value
+            );
+            
+            if (conditionMet) {
+                console.log('Loop condition met, breaking');
+                return true;
+            }
+            
+            // Wait before next attempt
+            await this.page.waitForTimeout(1000);
+        }
+        
+        // Handle failure based on on_failure setting
+        const onFailure = step.on_failure || 'continue';
+        switch (onFailure) {
+            case 'break_pass':
+                throw new Error('BREAK_PASS: Loop condition not met within max attempts');
+            case 'break_fail':
+                throw new Error('BREAK_FAIL: Loop condition not met within max attempts');
+            case 'continue':
+            default:
+                console.log('Loop condition not met, continuing');
+                return false;
+        }
+    }
 }
 
 // Export the test runner class for use in generated tests
@@ -357,6 +462,47 @@ function generateStepCode(step, index) {
         case 'screenshot':
             return `${stepComment}
         await runner.takeScreenshot('screenshot-step-${index + 1}.png');`;
+            
+        case 'condition':
+            return `${stepComment}
+        const conditionResult = await runner.checkCondition('${step.condition_type}', '${step.condition_selector}', '${step.condition_value || ''}');
+        console.log(\`Condition result: \${conditionResult}\`);`;
+            
+        case 'break_if':
+            return `${stepComment}
+        try {
+            await runner.executeConditionalStep({
+                type: 'break_if',
+                condition_type: '${step.condition_type}',
+                condition_selector: '${step.condition_selector}',
+                condition_value: '${step.condition_value || ''}',
+                break_on_condition: ${step.break_on_condition || false},
+                description: '${step.description || ''}'
+            });
+        } catch (error) {
+            if (error.message.startsWith('BREAK_')) {
+                console.log('Breaking test execution:', error.message);
+                if (error.message.startsWith('BREAK_FAIL')) {
+                    throw new Error('Test failed due to break condition: ${step.description || 'Condition met'}');
+                } else {
+                    console.log('Test passed due to break condition: ${step.description || 'Condition met'}');
+                    return; // Exit test successfully
+                }
+            }
+            throw error;
+        }`;
+            
+        case 'loop_until':
+            return `${stepComment}
+        await runner.executeLoopUntil({
+            type: 'loop_until',
+            condition_type: '${step.condition_type}',
+            condition_selector: '${step.condition_selector}',
+            condition_value: '${step.condition_value || ''}',
+            max_attempts: ${step.max_attempts || 10},
+            on_failure: '${step.on_failure || 'continue'}',
+            description: '${step.description || ''}'
+        });`;
             
         default:
             return `${stepComment}
