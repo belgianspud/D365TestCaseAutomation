@@ -1,0 +1,76 @@
+I'm building a web-based platform to create, run, and manage automated test cases for Dynamics 365 (D365) model-driven apps like Sales and Customer Service. I need help building the entire system from scratch, starting from an empty folder.
+
+🧰 I want to use the following stack:
+
+- 🧠 Backend: Python (FastAPI preferred, but Flask is fine)
+- 🖥 Frontend: Svelte (HTML/CSS/JS)
+- 🤖 Automation: Playwright (for test creation and execution)
+- 🗃 Database: SQL Server via SSMS initially, later migrated to Azure SQL
+- ☁️ Goal: Secure cloud-hosted SaaS platform
+
+---
+
+🎯 Here's what I need the tool to do:
+
+1. **Allow users to log in and build D365 test cases** via an easy-to-use GUI.
+   - Drag-and-drop steps like:
+     - Navigate to app/table
+     - Click button
+     - Fill field
+     - Verify value
+     - Add delay/wait
+     - Conditional logic (e.g., if field X = Y, then ...)
+   - Support for reusable test "components" or templates.
+
+2. **Run tests** on demand:
+   - As a single test run or in a named suite
+   - With Playwright behind the scenes
+   - Either from a fresh browser or using pre-authenticated login state (due to MFA)
+   - Output results should be saved to DB and returned to the frontend
+
+3. **Test case editor** should:
+   - Save/load test definitions in the DB
+   - Generate `.spec.ts` (or `.spec.js`) files from those definitions
+   - Support “positive” and “negative” paths (expected fail/pass)
+
+4. **Test execution system**:
+   - Trigger Playwright CLI from backend (Python subprocess or node bridge)
+   - Capture stdout/stderr/logs
+   - Show results in frontend (pass/fail/trace/screenshots)
+
+5. **Reporting system**:
+   - Return test results (pass/fail, execution time, etc.)
+   - Store historical runs per user/test
+   - Show visual logs in frontend with filtering/search
+
+6. **Auth/login**:
+   - Start test from active logged-in D365 tab (or preload login with Playwright storageState)
+   - Ensure security of login state
+
+7. **Deployment**:
+   - Tool should be designed to run locally first, then host securely in the cloud (Azure or Render preferred)
+   - Should be multi-tenant friendly later
+
+---
+
+💡 Bonus/Nice-to-Haves:
+- Versioning or history for test cases
+- CI/CD support to run suites nightly
+- Email/Teams notifications on failure
+- Environment manager (dev/test/prod for each D365 instance)
+- Account/team management (users, roles, access levels)
+
+---
+
+📦 Deliverables I need help with:
+- Project folder structure recommendation
+- Initial setup and dependencies for each stack component
+- Backend endpoints: Create test, run test, get results
+- Frontend GUI: Create test case, view test case, run test
+- Playwright test builder function (JSON to `.spec.ts`)
+- SQL schema (users, test_cases, test_runs, steps, etc.)
+- Suggestions for deployment strategy and security
+
+Please walk me through building this step by step. I’m fine starting small with one route or component at a time — but it needs to grow into a real SaaS-grade tool. You can assume I have decent dev skills and VS Code, Node.js, Python, and Playwright installed.
+
+Let’s begin with the folder structure and environment setup.
