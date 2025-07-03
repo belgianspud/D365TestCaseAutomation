@@ -7,6 +7,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
+from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 
 from database import engine, Base
@@ -56,11 +57,11 @@ app.include_router(results_router, prefix="/api/results", tags=["results"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Root endpoint
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
     """Serve the main application page"""
     with open("static/index.html", "r") as f:
-        return f.read()
+        return HTMLResponse(content=f.read())
 
 # Health check endpoint
 @app.get("/api/health")
@@ -83,7 +84,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=5000,
         reload=True,
         log_level="info"
     )
