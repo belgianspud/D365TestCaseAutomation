@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D365 Test Automation Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div id="app">
+        <!-- Navigation Bar -->
+        <nav class="bg-blue-600 text-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <i class="fas fa-robot text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold">D365 Test Platform</h1>
+                    </div>
+                    <div class="flex items-center space-x-4" id="nav-menu">
+                        <!-- Navigation items will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <!-- Auth Section (shown when not logged in) -->
+            <div id="auth-section" class="hidden">
+                <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-center mb-6">Welcome to D365 Test Platform</h2>
+                    <div id="auth-form-container"></div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section (shown when logged in) -->
+            <div id="dashboard-section" class="hidden">
+                <!-- Dashboard Header -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        Dashboard
+                    </h2>
+                    <div id="dashboard-stats" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <!-- Stats will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-clock mr-2"></i>
+                        Recent Test Runs
+                    </h3>
+                    <div id="recent-runs" class="space-y-2">
+                        <!-- Recent runs will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <button id="btn-new-test" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create New Test
+                    </button>
+                    <button id="btn-view-tests" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center">
+                        <i class="fas fa-list mr-2"></i>
+                        View All Tests
+                    </button>
+                    <button id="btn-view-results" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        View Results
+                    </button>
+                </div>
+            </div>
+
+            <!-- Test Builder Section -->
+            <div id="test-builder-section" class="hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-cogs mr-2"></i>
+                        Test Case Builder
+                    </h2>
+                    <div id="test-builder-container"></div>
+                </div>
+            </div>
+
+            <!-- Test Management Section -->
+            <div id="test-management-section" class="hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-list mr-2"></i>
+                        Test Cases
+                    </h2>
+                    <div id="test-list-container"></div>
+                </div>
+            </div>
+
+            <!-- Results Viewer Section -->
+            <div id="results-section" class="hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-chart-bar mr-2"></i>
+                        Test Results
+                    </h2>
+                    <div id="results-container"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-lg p-6 flex items-center">
+                <i class="fas fa-spinner fa-spin text-blue-600 text-2xl mr-3"></i>
+                <span class="text-lg">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2">
+            <!-- Toast messages will be injected here -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/static/app.js"></script>
+    <script src="/static/components/AuthForm.js"></script>
+    <script src="/static/components/TestBuilder.js"></script>
+    <script src="/static/components/TestRunner.js"></script>
+    <script src="/static/components/ResultsViewer.js"></script>
+</body>
+</html>
