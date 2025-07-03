@@ -36,14 +36,17 @@ The D365 Test Automation Platform is a comprehensive web-based solution for crea
 ### Test Case Builder
 - **Problem**: User-friendly test creation without coding knowledge
 - **Solution**: Drag-and-drop interface with predefined step types
-- **Step Types**: Navigate, click, fill, verify, wait, conditional logic
-- **Storage**: JSON format for flexible step definitions
+- **Step Types**: Navigate, click, fill, verify, wait, conditional logic, break_if, loop_until
+- **Conditional Features**: Element existence checks, text validation, visibility checks, break criteria
+- **Storage**: JSON format for flexible step definitions with conditional parameters
 
 ### Test Execution Engine
 - **Problem**: Converting visual test definitions to executable code
-- **Solution**: Dynamic Playwright script generation from JSON definitions
-- **Features**: Template-based script generation, error handling, result capture
-- **Execution**: Subprocess-based Playwright CLI execution with output parsing
+- **Solution**: Dynamic Playwright script generation from JSON definitions using D365TestRunner class
+- **Features**: Template-based script generation, error handling, result capture, conditional logic
+- **Playwright Integration**: Full browser automation with D365-specific selectors and methods
+- **Conditional Actions**: break_if (pass/fail), loop_until (retry logic), condition checks
+- **Execution**: Subprocess-based Playwright CLI execution with output parsing and trace collection
 
 ### Results Management
 - **Problem**: Tracking and reporting test execution outcomes
@@ -103,3 +106,6 @@ Preferred communication style: Simple, everyday language.
 
 Changelog:
 - July 03, 2025. Initial setup
+- July 03, 2025. Added conditional test step support with break_if, loop_until, and condition types
+- July 03, 2025. Enhanced Playwright integration with D365TestRunner class supporting conditional logic
+- July 03, 2025. Added example test case creation feature demonstrating conditional actions and break criteria

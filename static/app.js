@@ -73,6 +73,10 @@ class D365TestApp {
         document.getElementById('btn-view-results')?.addEventListener('click', () => {
             this.showResults();
         });
+        
+        document.getElementById('btn-create-example')?.addEventListener('click', () => {
+            this.createExampleTestCase();
+        });
     }
     
     async verifyToken() {
@@ -558,6 +562,26 @@ class D365TestApp {
                 setTimeout(() => toast.remove(), 300);
             }
         }, 5000);
+    }
+
+    async createExampleTestCase() {
+        this.showLoading(true);
+        try {
+            const response = await axios.post(`${this.apiBaseURL}/tests/example-test-case`);
+            this.showToast('Example test case created successfully! Check "View All Tests" to see it.', 'success');
+            
+            // Refresh dashboard to show updated stats
+            if (this.currentView === 'dashboard') {
+                this.loadDashboardData();
+            }
+        } catch (error) {
+            this.showToast(
+                error.response?.data?.detail || 'Failed to create example test case',
+                'error'
+            );
+        } finally {
+            this.showLoading(false);
+        }
     }
 }
 

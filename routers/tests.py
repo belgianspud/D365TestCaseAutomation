@@ -258,3 +258,121 @@ async def get_test_case_runs(
     ).order_by(TestRun.created_at.desc()).offset(skip).limit(limit).all()
     
     return test_runs
+
+@router.post("/example-test-case", response_model=TestCaseSchema)
+async def create_example_test_case(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create an example test case demonstrating conditional actions and break criteria"""
+    
+    example_steps = [
+        {
+            "type": "navigate",
+            "value": "https://your-d365-environment.dynamics.com",
+            "description": "Navigate to D365 environment",
+            "timeout": 30000
+        },
+        {
+            "type": "wait",
+            "value": "3000",
+            "description": "Wait for page to load"
+        },
+        {
+            "type": "condition",
+            "condition_type": "exists",
+            "condition_selector": "[data-id='signin-button']",
+            "description": "Check if sign-in button exists"
+        },
+        {
+            "type": "break_if",
+            "condition_type": "not_exists",
+            "condition_selector": "[data-id='main-grid']",
+            "break_on_condition": False,
+            "description": "Break with fail if main grid is not found after login",
+            "timeout": 15000
+        },
+        {
+            "type": "click",
+            "selector": "[data-id='new-record-button']",
+            "description": "Click new record button",
+            "timeout": 10000
+        },
+        {
+            "type": "loop_until",
+            "condition_type": "not_visible",
+            "condition_selector": "[data-id='form-loading-indicator']",
+            "max_attempts": 10,
+            "on_failure": "continue",
+            "description": "Wait until form loading indicator disappears"
+        },
+        {
+            "type": "fill",
+            "selector": "[data-id='name-field']",
+            "value": "Test Account Name",
+            "description": "Fill account name field"
+        },
+        {
+            "type": "fill",
+            "selector": "[data-id='email-field']",
+            "value": "test@example.com",
+            "description": "Fill email field"
+        },
+        {
+            "type": "condition",
+            "condition_type": "text_contains",
+            "condition_selector": "[data-id='validation-message']",
+            "condition_value": "error",
+            "description": "Check for validation errors"
+        },
+        {
+            "type": "break_if",
+            "condition_type": "visible",
+            "condition_selector": "[data-id='error-dialog']",
+            "break_on_condition": False,
+            "description": "Break with fail if error dialog appears"
+        },
+        {
+            "type": "click",
+            "selector": "[data-id='save-button']",
+            "description": "Save the record"
+        },
+        {
+            "type": "loop_until",
+            "condition_type": "text_contains",
+            "condition_selector": "[data-id='status-message']",
+            "condition_value": "saved",
+            "max_attempts": 15,
+            "on_failure": "break_fail",
+            "description": "Wait for successful save confirmation"
+        },
+        {
+            "type": "verify",
+            "selector": "[data-id='record-id']",
+            "expected": "visible",
+            "description": "Verify record ID is visible"
+        },
+        {
+            "type": "break_if",
+            "condition_type": "text_equals",
+            "condition_selector": "[data-id='form-mode']",
+            "condition_value": "readonly",
+            "break_on_condition": True,
+            "description": "Break with pass if form is in readonly mode (record saved successfully)"
+        }
+    ]
+    
+    example_test_case = TestCase(
+        name="D365 Account Creation with Conditional Logic",
+        description="Example test case demonstrating Playwright automation with conditional actions, break criteria, and loop conditions for D365 account creation",
+        steps=example_steps,
+        expected_result="pass",
+        tags="example,d365,conditional,playwright,account-creation",
+        owner_id=current_user["user_id"]
+    )
+    
+    db.add(example_test_case)
+    db.commit()
+    db.refresh(example_test_case)
+    
+    return example_test_case
